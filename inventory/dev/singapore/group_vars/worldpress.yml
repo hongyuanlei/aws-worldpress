@@ -1,0 +1,6 @@
+application: worldpress
+version: 1
+ami: ami-e2adf99e
+instance_type: t2.micro
+as_max: 1
+as_min: 1

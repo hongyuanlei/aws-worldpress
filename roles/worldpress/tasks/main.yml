@@ -1,0 +1,26 @@
+---
+  - name: setup worldpress stack
+    cloudformation:
+      stack_name: "{{application}}-{{version}}"
+      state: present
+      region: "{{aws_region}}"
+      disable_rollback: true
+      template: "aws/cloudformations/worldpress.yml"
+      stack_policy: "aws/policies/stack-policy.json"
+      template_parameters:
+        AMI: "{{ami}}"
+        InstanceType: "{{instance_type}}"
+        KeyName: "{{key_name}}"
+        VpcID: "{{aws_vpc_id}}"
+        HostedZoneName: "{{public_hosted_zone_name}}"
+        RecordName: "{{application}}"
+        Version: "{{version}}"
+        AvailabilityZones: "{{zones}}"
+        PublicSubnets: "{{public_subnets}}"
+        ASGMaxSize: "{{as_max}}"
+        ASGMinSize: "{{as_min}}"
+        SSLCertArn: "{{ssl_cert_arn}}"
+        HostedZoneId: "{{hosted_zone_id}}"
+      tags:
+        project: "{{project}}"
+        application: "{{application}}"
