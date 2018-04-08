@@ -235,6 +235,53 @@ Resources:
         FromPort: 80
         ToPort: 80
       VpcId: !Ref VpcID
+  ScaleUpPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      Cooldown: 120
+      ScalingAdjustment: 2
+  ALBResponseTimeHigh:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Response time of ALB is over 1 second
+      Namespace: AWS/ApplicationELB
+      MetricName: TargetResponseTime
+      Threshold: 1
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 2
+      Period: 60
+      Statistic: Average
+      AlarmActions:
+      - !Ref ScaleUpPolicy
+      Dimensions:
+      - Name: LoadBalancer
+        Value: !GetAtt LoadBalancer.LoadBalancerFullName
+  ScaleDownPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      Cooldown: 300
+      ScalingAdjustment: -2
+  ALBResponseTimeLow:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Response time of ALB is less than 0.2 second
+      Namespace: AWS/ApplicationELB
+      MetricName: TargetResponseTime
+      Threshold: 0.2
+      ComparisonOperator: LessThanThreshold
+      EvaluationPeriods: 2
+      Period: 60
+      Statistic: Average
+      AlarmActions:
+      - !Ref ScaleDownPolicy
+      Dimensions:
+      - Name: LoadBalancer
+        Value: !GetAtt LoadBalancer.LoadBalancerFullName
+
   WaitHandle:
     Type: AWS::CloudFormation::WaitConditionHandle
   WaitCondition:
