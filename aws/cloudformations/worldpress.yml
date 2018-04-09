@@ -240,7 +240,7 @@ Resources:
     Properties:
       AdjustmentType: ChangeInCapacity
       AutoScalingGroupName: !Ref AutoScalingGroup
-      Cooldown: 120
+      Cooldown: 1
       ScalingAdjustment: 2
   ALBResponseTimeHigh:
     Type: AWS::CloudWatch::Alarm
